@@ -1,0 +1,62 @@
+name: Build SHAGGY26K - Full Haxe Tools
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    - name: Set up Haxe
+      uses: krdlab/setup-haxe@v1.5.0
+      with:
+        haxe-version: '4.2.5'
+
+    - name: Install Common Haxelib Dependencies
+      run: |
+        haxelib install lime --always
+        haxelib install openfl --always
+        haxelib install hxcpp --always
+        haxelib install flixel --always
+        haxelib install flixel-addons --always
+        haxelib install flixel-ui --always
+        haxelib install hscript --always
+        haxelib install linc_luajit --always
+        haxelib install format --always
+        haxelib install actuate --always
+        haxelib install tink_core --always
+        haxelib install tink_macro --always
+        haxelib install tink_json --always
+        haxelib install tink_url --always
+        haxelib install tink_await --always
+        haxelib install tink_web --always
+        haxelib install hxbit --always
+        haxelib install box2d --always
+        haxelib install nape --always
+        haxelib install discord_rpc --always
+        haxelib install haxeui-core --always
+        haxelib install haxeui-openfl --always
+        haxelib list
+
+    - name: Setup Lime and OpenFL
+      run: |
+        haxelib run lime setup
+        haxelib run openfl setup
+
+    - name: Build Windows Executable
+      run: haxelib run lime build windows --verbose
+
+    - name: List export folder contents
+      run: dir export\release\windows\bin
+
+    - name: Upload Artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: SHAGGY26K-FullTools-Build
+        path: export/release/windows/bin
