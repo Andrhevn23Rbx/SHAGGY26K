@@ -1,0 +1,20 @@
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: krdlab/setup-haxe@v1.5.0
+        with:
+          haxe-version: '4.2.5'
+      - run: |
+          haxelib install lime --always
+          haxelib install openfl --always
+          haxelib install hxcpp --always
+          haxelib install flixel --always
+          haxelib install flixel-addons --always
+          haxelib install flixel-ui --always
+          haxelib install hscript --always
+          haxelib run lime setup
+          haxelib run openfl setup
+      - name: Build Windows Executable
+        run: haxelib run lime build windows --verbose
